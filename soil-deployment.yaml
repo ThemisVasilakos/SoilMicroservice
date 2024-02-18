@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soil-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: soil-microservice
+  template:
+    metadata:
+      labels:
+        app: soil-microservice
+    spec:
+      containers:
+        - name: soil-microservice
+          image: "themisvas/soil-microservice:latest"
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATA_MONGODB_HOST
+              value: soil-mongodb
+            - name: SPRING_DATA_MONGODB_PORT
+              value: "27019"
+            - name: SPRING_DATA_MONGODB_DATABASE
+              value: soil
+            - name: SPRING_DATA_MONGODB_AUTHENTICATION
+              value: admin
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-username
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-password
+            - name: RABBITMQ_SOIL_QUEUE_NAME
+              value: soil.notification.queue
+            - name: RABBITMQ_EXCHANGE_NAME
+              value: notification.exchange
+            - name: RABBITMQ_SOIL_ROUTING_KEY
+              value: soil.queue.user.notification

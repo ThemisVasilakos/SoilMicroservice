@@ -35,9 +35,5 @@ public class SoilDataController {
     ){
         return new ResponseEntity<>(soilDataService.findLastEntry(location), HttpStatus.OK);
     }
-// Old method for creating data
-//    @PostMapping("/create")
-//    public SoilData createEntry(){
-//        return soilDataService.createData();
-//    }
+
 }

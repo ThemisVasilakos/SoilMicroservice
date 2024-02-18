@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soil-mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: soil-mongodb
+  template:
+    metadata:
+      labels:
+        app: soil-mongodb
+    spec:
+      containers:
+        - name: soil-mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27019
+          volumeMounts:
+            - name: soil-mongodb-data
+              mountPath: /data/soil-db
+  volumes:
+    - name: soil-mongodb-data
+      persistentVolumeClaim:
+        claimName: soil-mongodb-data

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  soil-microservice:
+    image: soil-microservice:latest
+    ports:
+      - "8080"
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27019
+      SPRING_DATA_MONGODB_DATABASE: soil
+      SPRING_DATA_MONGODB_AUTHENTICATION: admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      RABBITMQ_SOIL_QUEUE_NAME: soil.notification.queue
+      RABBITMQ_EXCHANGE_NAME: notification.exchange
+      RABBITMQ_SOIL_ROUTING_KEY: soil.queue.user.notification
+      EUREKA_CLIENT_SERVICE_URL: http://eureka-server:8761/eureka/
+    depends_on:
+      - mongodb
+    networks:
+      - environment-pollution-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27019:27017"
+    volumes:
+      - type: bind
+        source: Documents/pollution/soil-db
+        target: /pollution/soil-db
+    networks:
+      - environment-pollution-network
+
+networks:
+  environment-pollution-network:
+    external: true
+    name: project_environment-pollution-network

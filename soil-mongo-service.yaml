@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: soil-mongodb
+spec:
+  selector:
+    app: soil-mongodb
+  ports:
+    - protocol: TCP
+      port: 27019
+      targetPort: 27019
